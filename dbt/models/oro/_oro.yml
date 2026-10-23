@@ -1,0 +1,41 @@
+version: 2
+models:
+  # --- Dimensiones: cada valor una sola vez y nunca vacío ---
+  - name: dim_cocinero
+    columns:
+      - name: cocinero
+        data_tests: [unique, not_null]
+
+  - name: dim_food_truck
+    columns:
+      - name: food_truck
+        data_tests: [unique, not_null]
+
+  - name: dim_festival
+    columns:
+      - name: festival
+        data_tests: [unique, not_null]
+
+  # --- Hecho: un turno por fila y cada clave existe en su dimensión ---
+  - name: fact_turnos
+    columns:
+      - name: turno
+        data_tests: [unique, not_null]
+      - name: cocinero
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_cocinero')
+                field: cocinero
+      - name: food_truck
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_food_truck')
+                field: food_truck
+      - name: festival
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_festival')
+                field: festival
