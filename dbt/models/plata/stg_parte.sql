@@ -21,29 +21,16 @@ normalizado as (
     -- minúsculas ('electro puerto', 'jazz jardín'), sin tilde ('Jazz Jardin'), abreviado ('Fiesta Uni')
     -- y con el año ('Electro-Puerto 2026'). La entrega del 2026-06-15 venía bien.
     -- Arreglo en dos niveles:
-    --   1) La clave (con_clave) absorbe sola mayúsculas, tildes, signos y años: no hay que tocar nada.
-    --   2) Lo que la clave no resuelve (abreviaturas, erratas) va en "EQUIVALENCIAS", una línea por caso.
-    -- Lo que no se reconoce sale tal cual (else): NO se corrige a ciegas; el test accepted_values
-    -- se pone rojo y alguien decide a qué festival corresponde.
+    --   1) La clave (con_clave) absorbe sola mayúsculas, tildes, signos y años.
+    --   2) La clave se traduce al nombre oficial con el seed equivalencias_festival.csv: los 8
+    --      festivales oficiales y los casos que la clave no resuelve (abreviaturas, erratas).
+    --      Para un caso nuevo, se añade una fila al CSV; no hay que tocar este SQL.
+    -- Lo que no está en el seed sale tal cual (left join): NO se corrige a ciegas ni se pierde;
+    -- el test protagonista y accepted_values se ponen rojos y alguien decide a qué festival corresponde.
     -- Va antes de la mediana por festival para que cada festival tenga una sola mediana.
-    select * replace (
-        case clave_festival
-            -- los 8 festivales oficiales (clave -> nombre oficial)
-            when 'brisa fest'           then 'Brisa Fest'
-            when 'indie ria'            then 'Indie Ría'
-            when 'electro puerto'       then 'Electro Puerto'
-            when 'rock na vila'         then 'Rock na Vila'
-            when 'jazz jardin'          then 'Jazz Jardín'
-            when 'feria gastro'         then 'Feria Gastro'
-            when 'mercado nocturno'     then 'Mercado Nocturno'
-            when 'fiesta universitaria' then 'Fiesta Universitaria'
-            -- EQUIVALENCIAS: casos que la clave no resuelve. Para uno nuevo, añade una línea
-            -- con su clave (la columna "clave" de la consulta de revisión) y el nombre oficial.
-            when 'fiesta uni'           then 'Fiesta Universitaria'
-            else trim(festival)
-        end as festival
-    )
-    from con_clave
+    select c.* replace (coalesce(e.festival, trim(c.festival)) as festival)
+    from con_clave c
+    left join {{ ref('equivalencias_festival') }} e on e.clave = c.clave_festival
 ),
 sin_dup as (
     -- una fila por turno
