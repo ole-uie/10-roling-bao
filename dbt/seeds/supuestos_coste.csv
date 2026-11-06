@@ -1,0 +1,5 @@
+supuesto,valor,unidad,origen
+eur_kg_ingredientes,6,€/kg,Supuesto de la dirección (cuaderno de la J3: PRECIO_CONSUMO)
+min_por_racion,5,min,Dato de la dirección: tomar el pedido + preparar + cocinar + emplatar + cobrar
+eur_hora_bruto,9.55,€/h,Salario mínimo bruto por hora
+pct_ss_empresa,0.33,proporción,Seguridad Social de empresa para contrato temporal (aproximado)
