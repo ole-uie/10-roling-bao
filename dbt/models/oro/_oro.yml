@@ -39,3 +39,41 @@ models:
               arguments:
                 to: ref('dim_festival')
                 field: festival
+  # --- Historia (Jornada 7): cada modelo, su columna que identifica la fila ---
+  - name: historia_terreno
+    columns:
+      - name: turnos
+        data_tests: [not_null]
+
+  - name: historia_semanas
+    columns:
+      - name: semana
+        data_tests: [unique, not_null]
+
+  - name: historia_turnos
+    columns:
+      - name: turno
+        data_tests: [unique, not_null]
+
+  - name: historia_rentabilidad
+    description: "Margen por festival: ingreso − ingredientes (supuesto 6 €/kg) − mano de obra (supuesto 5 min por ración a 9,55 €/h brutos × 1,33 de Seguridad Social de empresa = 12,70 €/h)."
+    columns:
+      - name: festival
+        data_tests: [unique, not_null]
+
+  - name: historia_precio_objetivo
+    description: "Precio de la ración en Fiesta Universitaria para ganar la mediana del margen de los otros siete festivales, con las mismas raciones o con un 20 % menos."
+    columns:
+      - name: escenario
+        data_tests: [unique, not_null]
+
+  - name: historia_margen_semana
+    description: "Margen total por festival y semana (mismos supuestos de coste que historia_rentabilidad)."
+    columns:
+      - name: celda
+        data_tests: [unique, not_null]
+
+  - name: historia_contraste
+    columns:
+      - name: festival
+        data_tests: [unique, not_null]
